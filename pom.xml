@@ -64,7 +64,7 @@ THE SOFTWARE.
     </pluginRepositories>
     <properties>
         <java.level>8</java.level>
-        <jenkins.version>2.62</jenkins.version>
+        <jenkins.version>2.76</jenkins.version>
         <scm-api.version>2.0.8</scm-api.version>
         <no-test-jar>false</no-test-jar>
         <workflow-step-api.version>2.13</workflow-step-api.version>
