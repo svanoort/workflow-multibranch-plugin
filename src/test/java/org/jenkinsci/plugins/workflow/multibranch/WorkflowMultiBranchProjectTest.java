@@ -197,10 +197,11 @@ public class WorkflowMultiBranchProjectTest {
         mp.getIndexing().writeWholeLogTo(System.out);
         assertEquals(1, mp.getItems().size());
 
-        r.waitUntilNoActivity();
+        r.waitUntilNoActivityUpTo(10000);
         WorkflowRun b1 = p.getLastBuild();
         assertEquals(1, b1.getNumber());
-        mp.scheduleBuild2(0).getFuture().get();
+        Queue.Item item = mp.scheduleBuild2(0);
+        item.getFuture().get();
         mp.getIndexing().writeWholeLogTo(System.out);
         assertEquals("[p, p/master]", ExtensionList.lookup(Listener.class).get(0).names.toString());
     }
