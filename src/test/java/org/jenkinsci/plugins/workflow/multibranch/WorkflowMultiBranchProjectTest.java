@@ -143,7 +143,6 @@ public class WorkflowMultiBranchProjectTest {
         // RateLimitBranchProperty & BuildRetentionBranchProperty hidden by JobPropertyStep.HideSuperfluousBranchProperties.
         // UntrustedBranchProperty hidden because it applies only to Project.
         assert propertyTypes.contains(NoTriggerBranchProperty.class);
-        assert propertyTypes.contains(DurabilityHintBranchProperty.class);
         assert !propertyTypes.contains(BuildRetentionBranchProperty.class);
         assert !propertyTypes.contains(RateLimitBranchProperty.class);
         assert !propertyTypes.contains(UntrustedBranchProperty.class);
@@ -198,21 +197,12 @@ public class WorkflowMultiBranchProjectTest {
         mp.getIndexing().writeWholeLogTo(System.out);
         assertEquals(1, mp.getItems().size());
 
-        r.waitForCompletion(p.getLastBuild());
-        Thread.sleep(1000);
-        assert !p.isBuilding();
+        r.waitUntilNoActivity();
         WorkflowRun b1 = p.getLastBuild();
         assertEquals(1, b1.getNumber());
-        Queue.Item it = mp.scheduleBuild2(0);
-        Thread.sleep(100);
-        if (it != null) {
-            System.out.println("indexing");
-        }
-        it.getFuture().waitForStart();
-        it.getFuture().get();
-//        mp.scheduleBuild2(0).getFuture().get();
-     //   mp.getIndexing().writeWholeLogTo(System.out);
-//        assertEquals("[p, p/master]", ExtensionList.lookup(Listener.class).get(0).names.toString());
+        mp.scheduleBuild2(0).getFuture().get();
+        mp.getIndexing().writeWholeLogTo(System.out);
+        assertEquals("[p, p/master]", ExtensionList.lookup(Listener.class).get(0).names.toString());
     }
     @TestExtension("conflictingBranches") public static class Listener extends ItemListener {
         List<String> names = new ArrayList<>();
